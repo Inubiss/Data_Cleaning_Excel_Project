@@ -1,0 +1,55 @@
+**Change Log: Data Cleaning Process**
+
+### Initial Setup
+- Changed separator in data file to ",".
+
+### Data Cleaning Steps
+1. **Data Backup**
+   - Created a backup of the raw data.
+   
+2. **Data Formatting**
+   - Applied auto-fit to all columns for better visibility.
+   - Added filters to all columns for easy navigation.
+   
+3. **Data Cleansing**
+   - Removed duplicate entries.
+   - Removed outliers using filters, LEN function, and visualizations.
+   - Applied TRIM and PROPER functions to clean text data.
+   - Removed or merged inconsistent rows:
+     - Handled blanks/0 income.
+     - Standardized values in `Marital_Status` column (e.g., merged "absurd/yolo" entries and standardized "alone").
+     
+4. **Cell Formatting**
+   - Changed cell formats to correct incorrect dates using the custom formula:
+ 
+     =DATE(
+         IF(ISNUMBER(FIND("/", I2)), RIGHT(I2, 4), RIGHT(I2, 4)),
+         IF(ISNUMBER(FIND("/", I2)), MID(I2, FIND("/", I2) + 1, FIND("/", I2, FIND("/", I2) + 1) - FIND("/", I2) - 1), MID(I2, FIND("-", I2) + 1, FIND("-", I2, FIND("-", I2) + 1) - FIND("-", I2) - 1)),
+         IF(ISNUMBER(FIND("/", I2)), LEFT(I2, FIND("/", I2) - 1), LEFT(I2, FIND("-", I2) - 1))
+     )
+  
+   - Copied and pasted values to correct corrupted cells.
+   - Split text to columns for `Kidhome_Teenhome`.
+
+### New Enhancements
+1. **Derived Columns**
+   - Extracted year from `dt_Customer` using the YEAR function to calculate age:
+ 
+     Age = Dt_Customer_Year - Birth_Year + 2 (Data period collection)
+    
+   - Added `Age_bracket` column using the formula:
+
+     =IFS(C2<=35,"Young Adult",C2<=55,"Middle Age",TRUE,"Old")
+ 
+   - Added `Income_bracket` column using the formula:
+ 
+     =IFS(F2<=25000,"Low",F2<=50000,"Medium",F2<=75000,"High",F2>75000,"Very High")
+     ```
+   - Added `Family_Size` column using the formula:
+
+     =I2+H2+IFS(E2="Single",1,E2="Divorced",1,E2="Widow",1,E2="Married",2,E2="Together",2)
+     ```
+
+2. **Data Visualization**
+   - Added a transposed sheet to view all columns in a single view area.
+
